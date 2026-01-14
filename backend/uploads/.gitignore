@@ -1,0 +1,9 @@
+# Uploaded screenshots
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+
+# Keep directory structure
+!.gitkeep

@@ -84,3 +84,48 @@ export interface JWTPayload {
   email: string;
   role: UserRole;
 }
+
+export interface UserSettings {
+  id: string;
+  userId: string;
+  theme: string;
+  language: string;
+  currency: string;
+  timezone: string;
+  defaultRiskPercentage: number;
+  defaultPositionSize?: number;
+  enableNotifications: boolean;
+  profileVisibility: string;
+  shareStatistics: boolean;
+  defaultChartInterval: string;
+  showTutorial: boolean;
+  compactMode: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface TeamSettings {
+  id: string;
+  teamId: string;
+  requireApprovalForTrades: boolean;
+  maxDailyLossLimit?: number;
+  maxPositionSize?: number;
+  allowedSymbols?: string[];
+  blockedSymbols?: string[];
+  weeklyReports: boolean;
+  monthlyReports: boolean;
+  reportRecipients?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AppSettings {
+  id: string;
+  key: string;
+  value: string;
+  category?: string;
+  description?: string;
+  isPublic: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}

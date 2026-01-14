@@ -35,3 +35,9 @@ coverage/
 # Database
 *.db
 *.sqlite
+
+# Uploads
+backend/uploads/screenshots/*
+!backend/uploads/screenshots/.gitkeep
+backend/backend/uploads/screenshots/*
+!backend/backend/uploads/screenshots/.gitkeep

@@ -34,6 +34,8 @@ export interface Trade {
   strategyId?: string;
   notes?: string;
   tags?: string[];
+  emotions?: string;
+  mistakes?: string;
   screenshots?: string[];
   status: TradeStatus;
   createdAt: string;

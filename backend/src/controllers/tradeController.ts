@@ -20,6 +20,9 @@ const createTradeSchema = z.object({
   strategyId: z.string().uuid().optional(),
   notes: z.string().optional(),
   tags: z.array(z.string()).optional(),
+  emotions: z.string().optional(),
+  mistakes: z.string().optional(),
+  screenshots: z.array(z.string()).optional(),
   status: z.nativeEnum(TradeStatus).default(TradeStatus.OPEN),
 });
 
@@ -47,14 +50,15 @@ export const createTrade = async (req: AuthRequest, res: Response, next: NextFun
       `INSERT INTO trades (
         user_id, symbol, type, direction, entry_price, exit_price, quantity,
         entry_date, exit_date, stop_loss, take_profit, profit_loss, profit_loss_percent,
-        fees, strategy_id, notes, tags, status
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+        fees, strategy_id, notes, tags, emotions, mistakes, screenshots, status
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
       RETURNING *`,
       [
         userId, data.symbol, data.type, data.direction, data.entryPrice,
         data.exitPrice || null, data.quantity, data.entryDate, data.exitDate || null,
         data.stopLoss || null, data.takeProfit || null, profitLoss, profitLossPercent,
-        data.fees, data.strategyId || null, data.notes || null, data.tags || null, data.status
+        data.fees, data.strategyId || null, data.notes || null, data.tags || null,
+        data.emotions || null, data.mistakes || null, data.screenshots || null, data.status
       ]
     );
 
