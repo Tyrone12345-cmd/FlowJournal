@@ -23,6 +23,7 @@ const loginSchema = z.object({
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log('Registration attempt:', { ...req.body, password: '***' });
     const { email, password, firstName, lastName, role, teamId } = registerSchema.parse(req.body);
 
     // Check if user already exists
@@ -69,6 +70,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       },
     });
   } catch (error) {
+    console.error('Registration error:', error);
     if (error instanceof z.ZodError) {
       return next(new AppError(error.errors[0].message, 400));
     }
