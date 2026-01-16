@@ -5,11 +5,11 @@ import { generateToken } from '../utils/jwt';
 
 export const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { token } = req.params;
+    const { token: verificationToken } = req.params;
 
-    console.log('Verification attempt with token:', token);
+    console.log('Verification attempt with token:', verificationToken);
 
-    if (!token) {
+    if (!verificationToken) {
       throw new AppError('Verification token is required', 400);
     }
 
@@ -18,7 +18,7 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
       `SELECT id, email, verification_token_expires, email_verified 
        FROM users 
        WHERE verification_token = $1`,
-      [token]
+      [verificationToken]
     );
 
     if (result.rows.length === 0) {
@@ -40,12 +40,12 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
       );
       
       const userData = userDataResult.rows[0];
-      const token = generateToken(userData.id);
+      const authToken = generateToken({ userId: userData.id });
       
       return res.json({
         message: 'Email already verified.',
         alreadyVerified: true,
-        token,
+        token: authToken,
         user: {
           id: userData.id,
           email: userData.email,
@@ -86,12 +86,12 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
     );
     
     const userData = userDataResult.rows[0];
-    const token = generateToken(userData.id);
+    const authToken = generateToken({ userId: userData.id });
 
     res.json({
       message: 'Email verified successfully.',
       verified: true,
-      token,
+      token: authToken,
       user: {
         id: userData.id,
         email: userData.email,
