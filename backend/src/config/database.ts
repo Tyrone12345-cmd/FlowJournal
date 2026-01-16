@@ -9,9 +9,11 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 const getDatabaseConfig = () => {
   if (process.env.DATABASE_URL) {
     console.log('Using DATABASE_URL for database connection');
+    // Check if we need SSL (only for external databases like DigitalOcean Managed DB)
+    const needsSSL = process.env.DB_SSL === 'true' || process.env.DATABASE_URL.includes('sslmode=require');
     return {
       connectionString: process.env.DATABASE_URL,
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
+      ssl: needsSSL ? { rejectUnauthorized: false } : false
     };
   }
   
@@ -29,7 +31,7 @@ const getDatabaseConfig = () => {
     database: process.env.DB_NAME || 'flowjournal',
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD?.replace(/['"]/g, ''),
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
+    ssl: false
   };
 };
 
