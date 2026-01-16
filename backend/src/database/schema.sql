@@ -22,6 +22,8 @@ CREATE TABLE users (
   email_verified BOOLEAN DEFAULT false,
   verification_token VARCHAR(255),
   verification_token_expires TIMESTAMP,
+  google_id VARCHAR(255),
+  onboarding_completed BOOLEAN DEFAULT false,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );
