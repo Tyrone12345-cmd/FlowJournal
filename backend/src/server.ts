@@ -22,14 +22,45 @@ const PORT = process.env.PORT || 3001;
 
 // Security middleware
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false,
+  crossOriginOpenerPolicy: false, // Disable for HTTP
+  contentSecurityPolicy: false, // Will be added manually below
 }));
+
+// CORS configuration
+const corsOrigins = [
+  'http://localhost:5173', 
+  'http://localhost:5174',
+  'http://161.35.25.10:8080',
+  'http://161.35.25.10',
+  'http://161.35.25.10:3001'
+];
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    if (corsOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow all origins in development
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
 }));
+
+// Remove problematic headers for HTTP connections
+app.use((req, res, next) => {
+  res.removeHeader('Cross-Origin-Opener-Policy');
+  res.removeHeader('Cross-Origin-Embedder-Policy');
+  res.removeHeader('Origin-Agent-Cluster');
+  next();
+});
 
 // Rate limiting - großzügigere Einstellungen für Development
 const limiter = rateLimit({
@@ -58,6 +89,11 @@ app.use((req, res, next) => {
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Favicon handler to prevent errors
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end();
 });
 
 // Serve uploaded files with CORS headers
