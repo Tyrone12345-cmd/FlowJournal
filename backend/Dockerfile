@@ -14,9 +14,8 @@ COPY tsconfig.json ./
 # Copy source code
 COPY src ./src
 
-# Build TypeScript
+# Install TypeScript and tsx for runtime execution
 RUN npm install -D typescript tsx
-RUN npm run build
 
 # Create uploads directory
 RUN mkdir -p uploads/screenshots
@@ -24,5 +23,5 @@ RUN mkdir -p uploads/screenshots
 # Expose port
 EXPOSE 3001
 
-# Start the app
-CMD ["npm", "start"]
+# Start the app with tsx (TypeScript runtime)
+CMD ["npx", "tsx", "src/server.ts"]
