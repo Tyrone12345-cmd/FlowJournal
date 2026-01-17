@@ -12,7 +12,7 @@ import settingsRoutes from './routes/settingsRoutes';
 import uploadRoutes from './routes/uploadRoutes';
 import { errorHandler } from './middleware/errorHandler';
 import logger from './utils/logger';
-import { initializePassport } from './config/passport';
+import { initializePassport } from './config/passport'; 
 
 dotenv.config();
 initializePassport();
@@ -119,6 +119,8 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
   logger.info(`🚀 Server running on port ${PORT}`);
   logger.info(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
