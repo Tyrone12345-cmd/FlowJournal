@@ -35,7 +35,14 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const response = await authAPI.login(data);
+      
+      // Set token first in localStorage before calling setAuth
+      localStorage.setItem('token', response.token);
+      
+      // Then update the auth store
       setAuth(response.user, response.token);
+      
+      // Navigate after everything is set
       navigate('/app/dashboard');
     } catch (error: any) {
       console.error('Login error:', error);
