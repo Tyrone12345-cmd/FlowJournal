@@ -108,6 +108,7 @@ export const googleCallback = async (req: Request, res: Response, next: NextFunc
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log('Login attempt:', { email: req.body.email });
     const { email, password } = loginSchema.parse(req.body);
 
     // Find user
@@ -117,6 +118,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     );
 
     if (result.rows.length === 0) {
+      console.log('Login failed: User not found');
       throw new AppError('Invalid credentials', 401);
     }
 
@@ -125,13 +127,17 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
+      console.log('Login failed: Invalid password');
       throw new AppError('Invalid credentials', 401);
     }
 
     // Check if email is verified
     if (!user.email_verified) {
+      console.log('Login failed: Email not verified');
       throw new AppError('Please verify your email before logging in', 401);
     }
+
+    console.log('Login successful for user:', user.email);
 
     // Generate token
     const token = generateToken({
@@ -152,6 +158,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       token,
     });
   } catch (error) {
+    console.error('Login error:', error);
     if (error instanceof z.ZodError) {
       return next(new AppError(error.errors[0].message, 400));
     }
