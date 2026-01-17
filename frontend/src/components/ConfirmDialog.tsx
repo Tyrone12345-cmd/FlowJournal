@@ -52,7 +52,7 @@ export default function ConfirmDialog({
   icon,
 }: ConfirmDialogProps) {
   const styles = typeStyles[type];
-  const IconComponent = icon || styles.icon;
+  const IconComponent = (icon || styles.icon) as any;
 
   const handleConfirm = () => {
     onConfirm();
